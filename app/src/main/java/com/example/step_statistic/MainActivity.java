@@ -56,9 +56,6 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
-
-
-
         btnOn = findViewById(R.id.bluetoothStart);                  // кнопка включения
         btnOff = findViewById(R.id.bluetoothStop);                // кнопка выключения
         statusText = findViewById(R.id.statusBluetooth);      // для вывода текста, полученного
@@ -100,16 +97,15 @@ public class MainActivity extends Activity {
             SharedPreferences prefs_btdev = getSharedPreferences("btdev", 0);
             String btdevaddr=prefs_btdev.getString("btdevaddr","?");
 
-            if (btdevaddr != "?")
-            {
+            if (btdevaddr != "?") {
                 BluetoothDevice device = btAdapter.getRemoteDevice(btdevaddr);
-
                 UUID SERIAL_UUID = UUID.fromString("0000f00d-1212-afde-1523-785fef13d123"); // bluetooth serial port service
                 //UUID SERIAL_UUID = device.getUuids()[0].getUuid(); //if you don't know the UUID of the bluetooth device service, you can get it like this from android cache
-
                 try {
                     btSocket = device.createRfcommSocketToServiceRecord(SERIAL_UUID);
-                } catch (Exception e) {Log.e("","Error creating socket");}
+                } catch (Exception e) {
+                    Log.e("","Error creating socket");
+                }
 
                 try {
                     btSocket.connect();
@@ -118,19 +114,14 @@ public class MainActivity extends Activity {
                     Log.e("",e.getMessage());
                     try {
                         Log.e("","trying fallback...");
-
                         btSocket =(BluetoothSocket) device.getClass().getMethod("createRfcommSocket", new Class[] {int.class}).invoke(device,1);
                         btSocket.connect();
-
                         Log.e("","Connected");
-                    }
-                    catch (Exception e2) {
+                    } catch (Exception e2) {
                         Log.e("", "Couldn't establish Bluetooth connection!");
                     }
                 }
-            }
-            else
-            {
+            } else {
                 Log.e("","BT device not selected");
             }
         }
@@ -205,7 +196,7 @@ public class MainActivity extends Activity {
 
         Log.d(TAG, "...In onPause()...");
 
-        try     {
+        try {
             btSocket.close();
         } catch (IOException e2) {
             errorExit("Fatal Error", "In onPause() and failed to close socket." + e2.getMessage() + ".");
@@ -231,7 +222,7 @@ public class MainActivity extends Activity {
         }
     }
 
-    private void errorExit(String title, String message){
+    private void errorExit(String title, String message) {
         Toast.makeText(getBaseContext(), title + " - " + message, Toast.LENGTH_LONG).show();
         finish();
     }
@@ -268,7 +259,9 @@ public class MainActivity extends Activity {
             try {
                 tmpIn = socket.getInputStream();
                 tmpOut = socket.getOutputStream();
-            } catch (IOException e) { }
+            } catch (IOException e) {
+
+            }
 
             mmInStream = tmpIn;
             mmOutStream = tmpOut;
@@ -309,7 +302,9 @@ public class MainActivity extends Activity {
         public void cancel() {
             try {
                 mmSocket.close();
-            } catch (IOException e) { }
+            } catch (IOException e) {
+
+            }
         }
     }
 }
